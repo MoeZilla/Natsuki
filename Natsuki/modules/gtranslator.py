@@ -10,10 +10,7 @@ from Natsuki.modules.disable import DisableAbleCommandHandler
 @run_async
 def totranslate(update: Update, context: CallbackContext):
     msg = update.effective_message
-    problem_lang_code = []
-    for key in LANGUAGES:
-        if "-" in key:
-            problem_lang_code.append(key)
+    problem_lang_code = [key for key in LANGUAGES if "-" in key]
     try:
         if msg.reply_to_message:
             args = update.effective_message.text.split(None, 1)
@@ -129,6 +126,8 @@ def totranslate(update: Update, context: CallbackContext):
         )
     except ValueError:
         update.effective_message.reply_text("The intended language is not found!")
+    else:
+        return
     else:
         return
 

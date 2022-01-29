@@ -29,8 +29,7 @@ def translate(update, context):
         for change in changes:
             start = change.get("From")
             end = change.get("To") + 1
-            suggestions = change.get("Suggestions")
-            if suggestions:
+            if suggestions := change.get("Suggestions"):
                 sugg_str = suggestions[0].get("Text")  # should look at this list more
                 curr_string += msg.text[prev_end:start] + sugg_str
 

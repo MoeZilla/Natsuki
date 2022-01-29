@@ -58,8 +58,7 @@ def lyrics(update: Update, context: CallbackContext):
         msg.reply_text("You haven't specified which song to look for!")
         return
     else:
-        song = Song.find_song(query)
-        if song:
+        if song := Song.find_song(query):
             if song.lyrics:
                 reply = song.format()
             else:
@@ -118,12 +117,8 @@ def github(update, context):
 
         for x, y in usr.items():
             if x in whitelist:
-                if x in difnames:
-                    x = difnames[x]
-                else:
-                    x = x.title()
-
-                if x == "Account created at" or x == "Last updated":
+                x = difnames.get(x, x.title())
+                if x in ["Account created at", "Last updated"]:
                     y = datetime.strptime(y, "%Y-%m-%dT%H:%M:%SZ")
 
                 if y not in goaway:
@@ -332,7 +327,7 @@ def markdown_help(update: Update, context: CallbackContext):
 def wiki(update, context):
     kueri = re.split(pattern="wiki", string=update.effective_message.text)
     wikipedia.set_lang("en")
-    if len(str(kueri[1])) == 0:
+    if not str(kueri[1]):
         update.effective_message.reply_text("Enter keywords!")
     else:
         try:
@@ -383,9 +378,8 @@ def ud(update: Update, context: CallbackContext):
 @run_async
 @typing_action
 def getlink(update, context):
-    args = context.args
     message = update.effective_message
-    if args:
+    if args := context.args:
         pattern = re.compile(r"-\d+")
     else:
         message.reply_text("You don't seem to be referring to any chats.")
@@ -546,8 +540,7 @@ def slist(update, context):
 
 @run_async
 def reply_keyboard_remove(update, context):
-    reply_keyboard = []
-    reply_keyboard.append([ReplyKeyboardRemove(remove_keyboard=True)])
+    reply_keyboard = [[ReplyKeyboardRemove(remove_keyboard=True)]]
     reply_markup = ReplyKeyboardRemove(remove_keyboard=True)
     old_message = context.bot.send_message(
         chat_id=update.message.chat_id,

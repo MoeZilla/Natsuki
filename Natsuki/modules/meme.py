@@ -44,12 +44,10 @@ def pat(update: Update, context: CallbackContext):
     args = context.args
     message = update.effective_message
 
-    reply_to = message.reply_to_message if message.reply_to_message else message
+    reply_to = message.reply_to_message or message
 
     curr_user = html.escape(message.from_user.first_name)
-    user_id = extract_user(message, args)
-
-    if user_id:
+    if user_id := extract_user(message, args):
         patted_user = bot.get_chat(user_id)
         user1 = curr_user
         user2 = html.escape(patted_user.first_name)
@@ -98,8 +96,7 @@ def slap(update, context):
             msg.from_user.first_name, msg.from_user.id
         )
 
-    user_id = extract_user(update.effective_message, args)
-    if user_id:
+    if user_id := extract_user(update.effective_message, args):
         slapped_user = context.bot.get_chat(user_id)
         user1 = curr_user
         if slapped_user.username:
@@ -109,7 +106,6 @@ def slap(update, context):
                 slapped_user.first_name, slapped_user.id
             )
 
-    # if no target found, bot targets the sender
     else:
         user1 = "[{}](tg://user?id={})".format(context.bot.first_name, context.bot.id)
         user2 = curr_user
@@ -161,8 +157,7 @@ def hug(update, context):
             msg.from_user.first_name, msg.from_user.id
         )
 
-    user_id = extract_user(update.effective_message, args)
-    if user_id:
+    if user_id := extract_user(update.effective_message, args):
         hugged_user = context.bot.get_chat(user_id)
         user1 = curr_user
         if hugged_user.username:
@@ -172,7 +167,6 @@ def hug(update, context):
                 hugged_user.first_name, hugged_user.id
             )
 
-    # if no target found, bot targets the sender
     else:
         user1 = "Awwh! [{}](tg://user?id={})".format(
             context.bot.first_name, context.bot.id
@@ -299,9 +293,7 @@ def gbam(update, context):
     message = update.effective_message
 
     curr_user = html.escape(message.from_user.first_name)
-    user_id = extract_user(message, args)
-
-    if user_id:
+    if user_id := extract_user(message, args):
         gbam_user = bot.get_chat(user_id)
         user1 = curr_user
         user2 = html.escape(gbam_user.first_name)
@@ -333,8 +325,7 @@ def shout(update, context):
         data = "I need a message to meme"
 
     msg = "```"
-    result = []
-    result.append(" ".join([s for s in data]))
+    result = [" ".join(list(data))]
     for pos, symbol in enumerate(data[1:]):
         result.append(symbol + " " + "  " * pos + symbol)
     result = list("\n".join(result))
@@ -394,10 +385,7 @@ def copypasta(update, context):
             elif c.lower() == b_char:
                 reply_text += "🅱️"
             else:
-                if bool(random.getrandbits(1)):
-                    reply_text += c.upper()
-                else:
-                    reply_text += c.lower()
+                reply_text += c.upper() if bool(random.getrandbits(1)) else c.lower()
         reply_text += random.choice(emojis)
         message.reply_to_message.reply_text(reply_text)
 
